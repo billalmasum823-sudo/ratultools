@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Messenger Call Template - Professional</title>
+    <style>
+        /* ================= গ্লোবাল রিসেট এবং ১০০% ফুল স্ক্রিন ফিক্স ================= */
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ================= অ্যানিমেশন এবং গ্লো ================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 5px #0084ff, 0 0 10px #0084ff; }
+            50% { box-shadow: 0 0 15px #0084ff, 0 0 30px #0084ff; }
+            100% { box-shadow: 0 0 5px #0084ff, 0 0 10px #0084ff; }
+        }
+
+        /* ================= কন্টেইনার (ডিসপ্লে বড় করে ফুল স্ক্রিন করা হয়েছে) ================= */
+        .app-container {
+            width: 100vw;
+            height: 100dvh; /* মোবাইল ব্রাউজারের জন্য ডাইনামিক হাইট */
+            background-color: #18191a;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= স্ক্রিন ম্যানেজমেন্ট ================= */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .screen.active { display: flex; }
+
+        /* ================= হেডার ================= */
+        .app-header {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a1a1a, #242526);
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .app-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #0084ff, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+            display: inline-block;
+            user-select: none;
+        }
+
+        /* ================= লগইন স্ক্রিন ================= */
+        .login-box {
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #0084ff;
+            font-size: 24px;
+        }
+
+        .login-box p {
+            text-align: center;
+            color: #b0b3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #e4e6eb;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #3a3b3c;
+            background-color: #242526;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #0084ff;
+            animation: glowPulse 1.5s infinite;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #0084ff, #0066cc);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: 0 0 15px #0084ff;
+        }
+
+        .btn-wa {
+            width: 100%;
+            padding: 15px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .btn-wa:active { transform: scale(0.98); }
+        .btn-wa svg { width: 24px; height: 24px; fill: currentColor; }
+
+        /* ================= জেনারেটর ড্যাশবোর্ড ================= */
+        #generator-screen {
+            padding: 20px;
+            background: linear-gradient(135deg, #18191a, #1c1c1c);
+        }
+
+        #generator-screen h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0084ff;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #b0b3b8;
+        }
+
+        .form-group select, .form-group input[type="text"], .form-group input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #3a3b3c;
+            background-color: #242526;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input[type="file"]::-webkit-file-upload-button {
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .participant-form {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #0084ff;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .participant-form h4 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #e4e6eb;
+        }
+
+        /* ================= কাস্টম সাউন্ড টগল সুইচ ================= */
+        .upload-group {
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+        }
+
+        .upload-group .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .sound-toggle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 5px;
+        }
+
+        .sound-toggle-container span {
+            font-size: 11px;
+            color: #b0b3b8;
+            margin-top: 5px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: #25D366; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* ================= ভিডিও কল স্ক্রিন (১০০% ফুল স্ক্রিন) ================= */
+        #call-screen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100dvh !important;
+            z-index: 9999 !important;
+            background-color: #000 !important;
+            display: none;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+        }
+        
+        #call-screen.active {
+            display: block !important;
+        }
+
+        /* স্ট্যাটাস বার (মোবাইলের উপরের অংশ) - ১০০% ট্রান্সপারেন্ট */
+        .phone-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 20;
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            background: transparent !important; 
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .status-left { display: flex; align-items: center; gap: 5px; }
+        .status-right { display: flex; align-items: center; gap: 8px; }
+        .sim-container { display: flex; gap: 4px; align-items: center; font-size: 10px; }
+        .sim-icon { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+        .sim-bars { display: flex; gap: 1px; align-items: flex-end; height: 8px; margin-bottom: 2px;}
+        .sim-bar { width: 2px; background: #fff; border-radius: 1px; }
+        .battery-container { display: flex; align-items: center; gap: 4px; }
+        .battery-icon { width: 22px; height: 11px; border: 1px solid #fff; border-radius: 2px; position: relative; padding: 1px; }
+        .battery-icon::after { content: ''; position: absolute; right: -3px; top: 2px; width: 2px; height: 5px; background: #fff; border-radius: 0 1px 1px 0; }
+        .battery-fill { height: 100%; background: #fff; border-radius: 1px; }
+
+        /* কল হেডার (নাম ও টাইমার) - ১০০% ট্রান্সপারেন্ট */
+        .call-header {
+            position: absolute; top: 35px; left: 0; width: 100%; padding: 15px;
+            display: flex; flex-direction: column; align-items: center; z-index: 15;
+            background: transparent !important;
+            pointer-events: none;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        }
+        .call-header .name { font-size: 18px; font-weight: 600; color: #fff; }
+        .call-header .timer { font-size: 13px; color: #fff; margin-top: 4px; }
+
+        /* ভিডিও কন্টেইনার - ১০০% ফুল স্ক্রিন */
+        .video-container { 
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw; height: 100dvh; 
+            display: block;
+            padding: 0;
+            margin: 0;
+            overflow: hidden; 
+            z-index: 1;
+        }
+        
+        .video-grid { width: 100vw; height: 100dvh; display: grid; gap: 4px; padding: 4px; margin: 0; }
+        .video-box { position: relative; background-color: #1c1c1c; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .video-box video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+
+        /* ফুল স্ক্রিন ভিডিও - ১০০% ফুল স্ক্রিন */
+        .full-screen-video { 
+            width: 100vw; 
+            height: 100dvh; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            margin: 0;
+            padding: 0;
+        }
+        .full-screen-video video { 
+            width: 100vw; 
+            height: 100dvh; 
+            object-fit: cover; 
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pip-local-video { position: absolute; top: 70px; right: 15px; width: 100px; height: 150px; border-radius: 12px; overflow: hidden; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); background: #222; }
+        .pip-local-video video { width: 100%; height: 100%; object-fit: cover; }
+        .pip-local-video .user-info { bottom: 5px; left: 5px; font-size: 10px; padding: 2px 6px; }
+
+        .user-info { position: absolute; bottom: 10px; left: 10px; display: flex; align-items: center; background: rgba(0, 0, 0, 0.5); padding: 4px 10px; border-radius: 15px; color: white; font-size: 12px; z-index: 5; backdrop-filter: blur(4px); }
+        .user-info .mic-icon { margin-right: 5px; font-size: 11px; }
+        .active-speaker { border: 2px solid #0084ff; }
+
+        .controls-bar { position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px 15px 35px 15px; display: flex; justify-content: space-around; align-items: center; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); z-index: 20; }
+        .control-btn { width: 50px; height: 50px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.15); border: none; color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(5px); transition: all 0.2s ease; }
+        .control-btn:active { transform: scale(0.9); background-color: rgba(255, 255, 255, 0.3); }
+        .control-btn.end-call { background-color: #ff3b30; width: 55px; height: 55px; }
+        .control-btn.end-call:active { background-color: #d32f2f; }
+        .icon { width: 24px; height: 24px; fill: currentColor; }
+
+        /* ================= অ্যাডমিন প্যানেল মডাল ================= */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+            background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px); padding: 20px;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease-out; }
+
+        .modal-content {
+            background: #242526; width: 100%; max-width: 400px; border-radius: 20px;
+            padding: 25px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0, 132, 255, 0.2);
+            position: relative;
+        }
+
+        .modal-content h3 { text-align: center; margin-bottom: 20px; color: #0084ff; }
+        
+        .admin-lock-icon {
+            text-align: center; font-size: 40px; margin-bottom: 15px; cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .admin-lock-icon:hover { transform: scale(1.1); }
+
+        .key-display-box {
+            background: #18191a; border: 1px dashed #0084ff; padding: 15px;
+            border-radius: 10px; text-align: center; font-family: monospace;
+            font-size: 18px; color: #00d2ff; margin-bottom: 15px; letter-spacing: 2px;
+            user-select: all;
+        }
+
+        .key-list {
+            max-height: 150px; overflow-y: auto; background: #18191a;
+            border-radius: 10px; padding: 10px; margin-top: 15px; font-size: 13px;
+            border: 1px solid #333;
+        }
+        .key-list-item {
+            display: flex; justify-content: space-between; padding: 8px;
+            border-bottom: 1px solid #2a2a2a; color: #b0b3b8;
+        }
+        .key-list-item:last-child { border-bottom: none; }
+        .key-list-item span { color: #fff; font-family: monospace; }
+        
+        .dev-credit {
+            text-align: center; font-size: 11px; color: #666; margin-top: 15px;
+            border-top: 1px solid #333; padding-top: 10px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- ================= হেডার (Tahmid Shahriar Ratul) ================= -->
+    <div class="app-header">
+        <h1 id="admin-trigger">Tahmid Shahriar Ratul</h1>
+    </div>
+
+    <!-- ================= লগইন স্ক্রিন ================= -->
+    <div id="login-screen" class="screen active">
+        <div class="login-box">
+            <h2>🔐 Premium Access</h2>
+            <p>ভিডিও জেনারেট করতে আপনার সিক্রেট Key দিন</p>
+            
+            <div class="input-group">
+                <label>Access Key</label>
+                <input type="text" id="user-key-input" placeholder="যেমন: KEY-XXXX-XXXX" autocomplete="off">
+            </div>
+
+            <button class="btn-primary" id="login-btn">Verify & Login</button>
+            
+            <!-- WhatsApp নাম্বার আপডেট করা হয়েছে -->
+            <a href="https://wa.me/212620653288" target="_blank" class="btn-wa">
+                <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.82 14.08c-.24.68-1.4 1.3-1.93 1.35-.53.05-1.06.24-3.57-.93-2.51-1.17-4.08-3.84-4.21-4.02-.12-.18-.93-1.3-.93-2.48 0-1.18.61-1.76.83-2 .22-.24.48-.3.65-.3.17 0 .35 0 .5.01.16.01.38-.06.59.45.21.51.72 1.76.78 1.89.06.13.1.28.02.45-.08.17-.12.28-.24.43-.12.15-.25.33-.36.44-.11.11-.23.23-.1.45.13.22.57.94 1.22 1.52.84.75 1.54 1 1.76 1.11.22.11.35.09.48-.05.13-.14.55-.64.7-.86.15-.22.3-.18.5-.11.2.07 1.28.6 1.5.71.22.11.37.17.42.26.05.09.05.52-.19 1.2z"/></svg>
+                Get Key (WhatsApp)
+            </a>
+        </div>
+    </div>
+
+    <!-- ================= জেনারেটর ড্যাশবোর্ড ================= -->
+    <div id="generator-screen" class="screen">
+        <h2>🎥 Video Call Setup</h2>
+        
+        <div class="form-group">
+            <label>কতজন ভিডিও কলে থাকবে?</label>
+            <select id="participant-count">
+                <option value="2" selected>২ জন (রিয়েল মেসেঞ্জার লেআউট)</option>
+                <option value="3">৩ জন</option>
+                <option value="4">৪ জন</option>
+                <option value="5">৫ জন</option>
+                <option value="6">৬ জন</option>
+                <option value="7">৭ জন</option>
+                <option value="8">৮ জন</option>
+                <option value="9">৯ জন</option>
+                <option value="10">১০ জন</option>
+            </select>
+        </div>
+
+        <div id="participant-forms"></div>
+
+        <button class="btn-primary" id="generate-btn">Generate Call Template</button>
+        
+        <div class="dev-credit">Developer: Tahmid Shahriar Ratul</div>
+    </div>
+
+    <!-- ================= ভিডিও কল স্ক্রিন ================= -->
+    <div id="call-screen" class="screen">
+        <!-- স্ট্যাটাস বার -->
+        <div class="phone-status-bar">
+            <div class="status-left"><span id="status-time">12:35</span></div>
+            <div class="status-right">
+                <div class="sim-container">
+                    <div class="sim-icon">
+                        <div class="sim-bars"><div class="sim-bar" style="height: 3px;"></div><div class="sim-bar" style="height: 5px;"></div><div class="sim-bar" style="height: 7px;"></div><div class="sim-bar" style="height: 8px;"></div></div>
+                        <span id="sim1-net" style="font-size: 8px;">4G</span>
+                    </div>
+                </div>
+                <div class="sim-container">
+                    <div class="sim-icon">
+                        <div class="sim-bars"><div class="sim-bar" style="height: 3px;"></div><div class="sim-bar" style="height: 5px;"></div><div class="sim-bar" style="height: 7px;"></div><div class="sim-bar" style="height: 8px;"></div></div>
+                        <span id="sim2-net" style="font-size: 8px;">5G</span>
+                    </div>
+                </div>
+                <div class="battery-container">
+                    <span id="battery-percent">85%</span>
+                    <div class="battery-icon"><div class="battery-fill" id="battery-fill" style="width: 85%;"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- কল হেডার -->
+        <div class="call-header">
+            <div class="name" id="header-name">User 1</div>
+            <div class="timer" id="call-timer">00:00</div>
+        </div>
+
+        <!-- ভিডিও কন্টেইনার -->
+        <div class="video-container" id="videoContainer"></div>
+
+        <!-- কন্ট্রোল বার -->
+        <div class="controls-bar">
+            <button class="control-btn" title="Video"><svg class="icon" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></button>
+            <button class="control-btn end-call" id="end-call-btn" title="End Call"><svg class="icon" viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7L21.29 15.7c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></button>
+            <button class="control-btn" title="Flip Camera"><svg class="icon" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
+            <button class="control-btn" title="More"><svg class="icon" viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+        </div>
+    </div>
+
+    <!-- ================= অ্যাডমিন প্যানেল মডাল ================= -->
+    <div class="modal-overlay" id="admin-modal">
+        <div class="modal-content">
+            <div class="admin-lock-icon" id="lock-icon">🔒</div>
+            
+            <div id="admin-password-section" class="hidden">
+                <h3>Admin Access</h3>
+                <div class="input-group">
+                    <input type="password" id="admin-password-input" placeholder="Enter Admin Password">
+                </div>
+                <button class="btn-primary" id="admin-login-btn">Unlock Panel</button>
+            </div>
+
+            <div id="admin-panel-section" class="hidden">
+                <h3>⚙️ Admin Panel</h3>
+                <div class="input-group">
+                    <label>Generate New Key</label>
+                    <button class="btn-primary" id="generate-key-btn">Generate Key</button>
+                </div>
+                <div class="key-display-box" id="generated-key-display">Click Generate</div>
+                
+                <label style="font-size: 13px; color: #b0b3b8;">Active Keys (Unlimited):</label>
+                <div class="key-list" id="key-list-container">
+                    <!-- Keys will be listed here -->
+                </div>
+                <button class="btn-primary" id="close-admin-btn" style="background: #ff3b30; margin-top: 15px;">Close Panel</button>
+            </div>
+            
+            <div class="dev-credit">Developer: Tahmid Shahriar Ratul</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // ডিভাইস আইডি জেনারেটর (One Device Policy)
+    // ==========================================
+    let deviceId = localStorage.getItem('device_id');
+    if (!deviceId) {
+        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        localStorage.setItem('device_id', deviceId);
+    }
+
+    // ==========================================
+    // Key ম্যানেজমেন্ট সিস্টেম (LocalStorage)
+    // ==========================================
+    let appKeys = JSON.parse(localStorage.getItem('app_keys')) || {};
+    
+    const ADMIN_PASSWORD = "Ratul0278";
+    const MASTER_KEY = "Ratul0278"; 
+
+    // ==========================================
+    // UI এলিমেন্ট রেফারেন্স
+    // ==========================================
+    const appContainer = document.querySelector('.app-container');
+    const loginScreen = document.getElementById('login-screen');
+    const generatorScreen = document.getElementById('generator-screen');
+    const callScreen = document.getElementById('call-screen');
+    const adminModal = document.getElementById('admin-modal');
+    const adminTrigger = document.getElementById('admin-trigger');
+    
+    const userKeyInput = document.getElementById('user-key-input');
+    const loginBtn = document.getElementById('login-btn');
+    
+    const adminPasswordSection = document.getElementById('admin-password-section');
+    const adminPanelSection = document.getElementById('admin-panel-section');
+    const adminPasswordInput = document.getElementById('admin-password-input');
+    const adminLoginBtn = document.getElementById('admin-login-btn');
+    const lockIcon = document.getElementById('lock-icon');
+    
+    const generateKeyBtn = document.getElementById('generate-key-btn');
+    const generatedKeyDisplay = document.getElementById('generated-key-display');
+    const keyListContainer = document.getElementById('key-list-container');
+    const closeAdminBtn = document.getElementById('close-admin-btn');
+
+    // ==========================================
+    // অ্যাডমিন ট্রিগার (৫ বার ট্যাপ করা)
+    // ==========================================
+    let tapCount = 0;
+    let tapTimer;
+
+    adminTrigger.addEventListener('click', () => {
+        tapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { tapCount = 0; }, 1000);
+
+        if (tapCount === 5) {
+            tapCount = 0;
+            openAdminModal();
+        }
+    });
+
+    function openAdminModal() {
+        adminModal.classList.add('active');
+        adminPasswordSection.classList.remove('hidden');
+        adminPanelSection.classList.add('hidden');
+        adminPasswordInput.value = '';
+        lockIcon.innerText = '🔒';
+        adminPasswordInput.focus();
+    }
+
+    adminLoginBtn.addEventListener('click', () => {
+        if (adminPasswordInput.value === ADMIN_PASSWORD) {
+            lockIcon.innerText = '🔓';
+            adminPasswordSection.classList.add('hidden');
+            adminPanelSection.classList.remove('hidden');
+            renderKeys();
+        } else {
+            alert('ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।');
+            adminPasswordInput.value = '';
+        }
+    });
+
+    adminPasswordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') adminLoginBtn.click();
+    });
+
+    // ==========================================
+    // Key জেনারেট করা এবং লিস্ট আপডেট করা
+    // ==========================================
+    function generateRandomKey() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let key = 'KEY-';
+        for (let i = 0; i < 4; i++) key += chars.charAt(Math.floor(Math.random() * chars.length));
+        key += '-';
+        for (let i = 0; i < 4; i++) key += chars.charAt(Math.floor(Math.random() * chars.length));
+        return key;
+    }
+
+    generateKeyBtn.addEventListener('click', () => {
+        const newKey = generateRandomKey();
+        appKeys[newKey] = null;
+        localStorage.setItem('app_keys', JSON.stringify(appKeys));
+        generatedKeyDisplay.innerText = newKey;
+        renderKeys();
+    });
+
+    function renderKeys() {
+        keyListContainer.innerHTML = '';
+        const keys = Object.keys(appKeys);
+        if (keys.length === 0) {
+            keyListContainer.innerHTML = '<div style="color:#666; text-align:center; padding:10px;">No keys generated yet.</div>';
+            return;
+        }
+        keys.forEach(key => {
+            const div = document.createElement('div');
+            div.className = 'key-list-item';
+            const status = appKeys[key] ? '🔴 Used' : '🟢 Active';
+            div.innerHTML = `<span>${key}</span> <span style="color:${appKeys[key] ? '#ff3b30' : '#25D366'}">${status}</span>`;
+            keyListContainer.appendChild(div);
+        });
+    }
+
+    closeAdminBtn.addEventListener('click', () => {
+        adminModal.classList.remove('active');
+    });
+
+    // ==========================================
+    // ইউজার লগইন (Key ভেরিফিকেশন)
+    // ==========================================
+    loginBtn.addEventListener('click', () => {
+        const inputKey = userKeyInput.value.trim().toUpperCase();
+
+        if (!inputKey) {
+            alert('দয়া করে একটি Key দিন!');
+            return;
+        }
+
+        if (inputKey === MASTER_KEY) {
+            loginSuccess();
+            return;
+        }
+
+        if (appKeys.hasOwnProperty(inputKey)) {
+            const assignedDevice = appKeys[inputKey];
+            
+            if (assignedDevice === null) {
+                appKeys[inputKey] = deviceId;
+                localStorage.setItem('app_keys', JSON.stringify(appKeys));
+                loginSuccess();
+            } else if (assignedDevice === deviceId) {
+                loginSuccess();
+            } else {
+                alert('❌ এই Key টি ইতিমধ্যে অন্য একটি ফোনে ব্যবহার করা হয়েছে!\n\nনতুন Key পেতে WhatsApp-এ যোগাযোগ করুন।');
+            }
+        } else {
+            alert('❌ ভুল বা অবৈধ Key! দয়া করে সঠিক Key দিন অথবা WhatsApp-এ যোগাযোগ করুন।');
+        }
+    });
+
+    userKeyInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') loginBtn.click();
+    });
+
+    function loginSuccess() {
+        loginScreen.classList.remove('active');
+        generatorScreen.classList.add('active');
+    }
+
+    // ==========================================
+    // ভিডিও জেনারেটর লজিক
+    // ==========================================
+    const participantCountSelect = document.getElementById('participant-count');
+    const participantFormsContainer = document.getElementById('participant-forms');
+    const generateBtn = document.getElementById('generate-btn');
+    const videoContainer = document.getElementById('videoContainer');
+    const endCallBtn = document.getElementById('end-call-btn');
+    const headerName = document.getElementById('header-name');
+    const callTimer = document.getElementById('call-timer');
+
+    const defaultVideos = [
+        "https://www.w3schools.com/html/mov_bbb.mp4",
+        "https://www.w3schools.com/html/movie.mp4",
+        "https://www.w3schools.com/html/mov_bbb.mp4"
+    ];
+
+    let participantData = []; 
+    let callTimerInterval;
+
+    function renderParticipantForms(count) {
+        participantFormsContainer.innerHTML = '';
+        participantData = []; 
+
+        for (let i = 0; i < count; i++) {
+            participantData.push({ name: `User ${i+1}`, videoUrl: '', hasSound: false }); 
+
+            const formDiv = document.createElement('div');
+            formDiv.className = 'participant-form';
+            formDiv.innerHTML = `
+                <h4>Participant ${i + 1} ${i === 0 ? '(You)' : ''}</h4>
+                <div class="form-group">
+                    <label>Name / ID</label>
+                    <input type="text" id="name-${i}" placeholder="Enter name" value="${i === 0 ? 'You' : 'User ' + (i+1)}">
+                </div>
+                <div class="upload-group">
+                    <div class="form-group">
+                        <label>Upload Video (Gallery)</label>
+                        <input type="file" accept="video/*" id="video-${i}">
+                    </div>
+                    <div class="sound-toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="sound-${i}">
+                            <span class="slider"></span>
+                        </label>
+                        <span>Sound</span>
+                    </div>
+                </div>
+            `;
+            participantFormsContainer.appendChild(formDiv);
+
+            document.getElementById(`name-${i}`).addEventListener('input', (e) => {
+                participantData[i].name = e.target.value || `User ${i+1}`;
+            });
+
+            document.getElementById(`video-${i}`).addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    participantData[i].videoUrl = URL.createObjectURL(file);
+                }
+            });
+
+            document.getElementById(`sound-${i}`).addEventListener('change', (e) => {
+                participantData[i].hasSound = e.target.checked;
+            });
+        }
+    }
+
+    renderParticipantForms(2);
+
+    participantCountSelect.addEventListener('change', (e) => {
+        renderParticipantForms(parseInt(e.target.value));
+    });
+
+    function randomizeStatusBar() {
+        const battery = Math.floor(Math.random() * 80) + 20;
+        document.getElementById('battery-percent').innerText = battery + '%';
+        document.getElementById('battery-fill').style.width = battery + '%';
+        document.getElementById('battery-fill').style.backgroundColor = battery > 20 ? '#fff' : '#ff3b30';
+        
+        const now = new Date();
+        let hours = now.getHours() % 12 || 12;
+        let minutes = now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('status-time').innerText = `${hours}:${minutes}`;
+        
+        const networks = ['4G', '5G', 'LTE'];
+        document.getElementById('sim1-net').innerText = networks[Math.floor(Math.random() * networks.length)];
+        document.getElementById('sim2-net').innerText = networks[Math.floor(Math.random() * networks.length)];
+    }
+
+    function startCallTimer() {
+        let secondsElapsed = 0;
+        clearInterval(callTimerInterval);
+        callTimerInterval = setInterval(() => {
+            secondsElapsed++;
+            let mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            let secs = (secondsElapsed % 60).toString().padStart(2, '0');
+            callTimer.innerText = `${mins}:${secs}`;
+        }, 1000);
+    }
+
+    generateBtn.addEventListener('click', () => {
+        const count = participantData.length;
+        randomizeStatusBar();
+        headerName.innerText = participantData[0].name;
+        videoContainer.innerHTML = ''; 
+        
+        appContainer.classList.add('call-active');
+
+        if (count === 2) {
+            const remoteBox = document.createElement('div');
+            remoteBox.className = 'full-screen-video';
+            remoteBox.appendChild(createVideoElement(participantData[0].videoUrl, 0));
+            videoContainer.appendChild(remoteBox);
+
+            const localBox = document.createElement('div');
+            localBox.className = 'pip-local-video';
+            localBox.appendChild(createVideoElement(participantData[1].videoUrl, 1));
+            videoContainer.appendChild(localBox);
+        } else {
+            let columns = 2, rows = 2;
+            if (count <= 4) { columns = 2; rows = 2; }
+            else if (count <= 6) { columns = 2; rows = 3; }
+            else if (count <= 9) { columns = 3; rows = 3; }
+            else if (count === 10) { columns = 3; rows = 4; } 
+
+            videoContainer.className = 'video-grid';
+            videoContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            videoContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+            participantData.forEach((data, i) => {
+                const box = document.createElement('div');
+                box.className = 'video-box';
+                if (i === 0) box.classList.add('active-speaker');
+                
+                box.appendChild(createVideoElement(data.videoUrl, i));
+                
+                const userInfo = document.createElement('div');
+                userInfo.className = 'user-info';
+                userInfo.innerHTML = `<span class="mic-icon">${data.hasSound ? '🎙️' : '🔇'}</span> ${data.name}`;
+                box.appendChild(userInfo);
+                videoContainer.appendChild(box);
+            });
+        }
+
+        generatorScreen.classList.remove('active');
+        callScreen.classList.add('active');
+        startCallTimer();
+    });
+
+    function createVideoElement(url, index) {
+        const video = document.createElement('video');
+        video.src = url ? url : defaultVideos[index % defaultVideos.length]; 
+        video.autoplay = true;
+        video.loop = true;
+        video.playsInline = true;
+        
+        const hasSound = participantData[index].hasSound;
+        video.muted = !hasSound;
+        
+        video.play().catch(error => {
+            console.log("Autoplay with sound prevented. Muting and retrying.", error);
+            video.muted = true;
+            video.play();
+        });
+        
+        return video;
+    }
+
+    function endCallAndReturn() {
+        clearInterval(callTimerInterval);
+        callScreen.classList.remove('active');
+        generatorScreen.classList.add('active');
+        videoContainer.innerHTML = '';
+        callTimer.innerText = '00:00';
+        
+        appContainer.classList.remove('call-active');
+    }
+
+    endCallBtn.addEventListener('click', endCallAndReturn);
+
+</script>
+</body>
+</html>
